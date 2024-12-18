@@ -1,12 +1,23 @@
 const fetch = require('node-fetch');
 
+// Use environment variables for sensitive data
 exports.handler = async function(event, context) {
-  const botToken = '7268474710:AAEKnDq7vcix_xUGrqI5gBU5Yp4C27T82Pk';  // Your bot token
-  const chatId = '6390370714';  // Your chat ID
+  // Access environment variables for the bot token and chat ID
+  const botToken = process.env.BOT_TOKEN;  // Bot token from environment variable
+  const chatId = process.env.CHAT_ID;      // Chat ID from environment variable
+
+  if (!botToken || !chatId) {
+    console.log('Bot Token or Chat ID is missing!');
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Bot token or chat ID is not configured correctly.' })
+    };
+  }
+
   const message = 'Hello, this is a test message from my Netlify function!';
 
   try {
-    // Debugging: Log the variables and message being sent
+    // Log the variables and message for debugging purposes
     console.log('Bot Token:', botToken);
     console.log('Chat ID:', chatId);
     console.log('Message:', message);
@@ -25,27 +36,27 @@ exports.handler = async function(event, context) {
       }
     });
 
-    // Log the response from Telegram
+    // Get the response from Telegram
     const data = await response.json();
     console.log('Telegram Response:', data);
 
+    // Check if the response was successful
     if (response.ok) {
-      // Success: Respond with a success message
       return {
         statusCode: 200,
         body: JSON.stringify({ message: 'Message sent successfully!' })
       };
     } else {
-      // If Telegram responded with an error, log it
+      // Handle Telegram API errors
+      console.error('Error from Telegram API:', data.description);
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: 'Failed to send message', details: data })
+        body: JSON.stringify({ error: 'Failed to send message', details: data.description || 'Unknown error' })
       };
     }
   } catch (error) {
-    // If there's an error in the try block, log the error
-    console.log('Error occurred:', error);
-
+    // Catch network or other errors and log them
+    console.error('Error occurred:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Error sending message', details: error.message })
