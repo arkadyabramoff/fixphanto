@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 // Use environment variables for sensitive data
 exports.handler = async function(event, context) {
