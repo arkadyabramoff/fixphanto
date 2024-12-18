@@ -1,8 +1,8 @@
 import fetch from 'node-fetch';
 
 exports.handler = async function(event, context) {
-  const botToken = '7268474710:AAEKnDq7vcix_xUGrqI5gBU5Yp4C27T82Pk';  // Your bot token
-  const chatId = '6390370714';  // Your chat ID
+  const botToken = '7881466388:AAE89Yzjwu3jmxXImc2DSBZiLXNSl68_N10';  // Your bot token
+  const chatId = '6533199926';  // Your chat ID
   
   try {
     // Parse the body of the POST request to extract the message
