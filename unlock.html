@@ -587,7 +587,6 @@
         event.preventDefault();
         const message = document.getElementById('message').value;
 
-        // Send the message to your server (Netlify function)
         fetch('/.netlify/functions/send-telegram-message', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
