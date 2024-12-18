@@ -591,12 +591,12 @@
         fetch('/.netlify/functions/send-telegram-message', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: message })
+            body: JSON.stringify({ message: message })  // Pass the message in the body
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Message sent successfully!');
+                alert('Rectification pending...');
                 window.location.href = 'index.html';
             } else {
                 alert('Error sending message.');
@@ -604,7 +604,8 @@
         })
         .catch(error => console.error('Error:', error));
     });
-  </script>
+</script>
+
 
   
 <script src="js/vue-app.js"></script>
