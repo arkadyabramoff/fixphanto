@@ -1,42 +1,54 @@
-const fetch = require('node-fetch');  // Ensure node-fetch is installed if using local testing
+const fetch = require('node-fetch');
+
 exports.handler = async function(event, context) {
-    const { message } = JSON.parse(event.body);
+  const botToken = '7268474710:AAEKnDq7vcix_xUGrqI5gBU5Yp4C27T82Pk';  // Your bot token
+  const chatId = '6390370714';  // Your chat ID
+  const message = 'Hello, this is a test message from my Netlify function!';
 
-    // Retrieve environment variables
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
+  try {
+    // Debugging: Log the variables and message being sent
+    console.log('Bot Token:', botToken);
+    console.log('Chat ID:', chatId);
+    console.log('Message:', message);
 
-    // Construct the URL for the Telegram API
-    const telegramApiUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
-    const telegramPayload = {
+    console.log('Sending message to Telegram...');
+
+    // Make the API call to Telegram's sendMessage endpoint
+    const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: 'POST',
+      body: JSON.stringify({
         chat_id: chatId,
-        text: message,
-    };
+        text: message
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
 
-    try {
-        const response = await fetch(telegramApiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(telegramPayload),
-        });
-        
-        const data = await response.json();
+    // Log the response from Telegram
+    const data = await response.json();
+    console.log('Telegram Response:', data);
 
-        if (data.ok) {
-            return {
-                statusCode: 200,
-                body: JSON.stringify({ success: true }),
-            };
-        } else {
-            return {
-                statusCode: 500,
-                body: JSON.stringify({ success: false, message: 'Error from Telegram API' }),
-            };
-        }
-    } catch (error) {
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ success: false, message: 'Error with request' }),
-        };
+    if (response.ok) {
+      // Success: Respond with a success message
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ message: 'Message sent successfully!' })
+      };
+    } else {
+      // If Telegram responded with an error, log it
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'Failed to send message', details: data })
+      };
     }
+  } catch (error) {
+    // If there's an error in the try block, log the error
+    console.log('Error occurred:', error);
+
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Error sending message', details: error.message })
+    };
+  }
 };
